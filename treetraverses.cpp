@@ -82,6 +82,36 @@ public:
         return result;
     }
 
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        std::vector<std::vector<int>> result;
+        if(!root)
+            return result;
+        std::queue<TreeNode*> path;
+        std::vector<int> layer;
+        path.push(root);
+        TreeNode* curr;
+        while(path.size()){
+            int path_size = path.size();
+            for(size_t i = 0; i < path_size; ++i){
+                curr = path.front();
+                path.pop();
+                layer.push_back(curr->val);
+                
+                if(curr->left)
+                    path.push(curr->left);
+                
+                if(curr->right)
+                    path.push(curr->right);
+                
+            }
+            
+            result.push_back(layer);
+            layer.resize(0);
+        }
+        
+        return result;
+    }
+
     vector<int> postorderTraversal(TreeNode* root) {
         /*std::vector<int> res;
         std::stack<TreeNode*> path;
@@ -122,5 +152,51 @@ public:
         }
         
         return res;
+    }
+
+    int maxDepthRecur(TreeNode* root) {
+        return getMaxDepth(root, 1);
+    }
+    
+    int getMaxDepth(TreeNode* head, int&& val){
+        if(!head)
+            return val-1;
+        std::cout << head -> val << " " << val << "\n";
+        return std::max(getMaxDepth(head->left, val+1), getMaxDepth(head->right, val+1));
+    }
+    
+    //kinda bad need to fix this branches
+    bool isSymmetric(TreeNode* root) {
+        if(!root)
+            return true;
+        std::queue<TreeNode*> nodes;
+        TreeNode* curr_left;
+        TreeNode* curr_right;
+        
+        nodes.push(root->left);
+        nodes.push(root->right);
+        
+        while(nodes.size()){
+            curr_left = nodes.front();
+            nodes.pop();
+            curr_right = nodes.front();
+            nodes.pop();
+            if(curr_left != curr_right && !(curr_left && curr_right))
+                return false;
+            if(!curr_right && !curr_left)
+                continue;
+                
+            std::cout << curr_left->val << " " << curr_right -> val << "\n";
+            
+            if(curr_left -> val != curr_right -> val)
+                return false;
+            
+            nodes.push(curr_left -> left);
+            nodes.push(curr_right -> right);
+            nodes.push(curr_left -> right);
+            nodes.push(curr_right -> left);
+            
+        }
+        return true;
     }
 };
